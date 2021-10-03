@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `accounts` (
 	`last_name` VARCHAR(128) NOT NULL,
 	`birth_date` DATE,
 	`gender` BIT NOT NULL DEFAULT 0,
-	`profile_picture` VARCHAR(255) NOT NULL,
+	`profile_picture` VARCHAR(255) NOT NULL DEFAULT '/images/profile_picture/default.jpg',
 	`datetime_register` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`datetime_last_login` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`is_admin` BIT NOT NULL DEFAULT 0,
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `accounts` (
 CREATE TABLE IF NOT EXISTS `articles` (
 	`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 	`title` VARCHAR(128) NOT NULL DEFAULT 'No Title',
-	`author_id` INTEGER UNSIGNED NOT NULL DEFAULT 'Unknown',
+	`author_id` INTEGER UNSIGNED NOT NULL,
 	`datetime_created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`datetime_modified` DATETIME,
 	PRIMARY KEY (`id`),
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `admin_log` (
 	`datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`admin_id` INTEGER UNSIGNED NOT NULL,
 	`admin_name` VARCHAR(255) NOT NULL DEFAULT 'Unknown',
-	`action` VARCHAR(255) NOT NULL 'Unknown',
+	`action` VARCHAR(255) NOT NULL DEFAULT 'Unknown',
 	PRIMARY KEY (`id`),
 	FOREIGN KEY (`admin_id`) REFERENCES `accounts`(`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB;

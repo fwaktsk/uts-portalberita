@@ -70,7 +70,7 @@
 					$register_error = 'Gagal mendaftar. Silakan coba beberapa saat lagi';
 
 					if($stmt->errorCode() === '23505') {
-						$register_error = 'Username telah digunakan';
+						$register_error = 'Email atau username telah digunakan';
 					}
 				}
 				unset($stmt);
@@ -94,7 +94,7 @@
 		<!-- <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet"> -->
 	</head>
 
-	<body>
+	<body class="bg-dark">
 		<header>
 			<nav class="navbar navbar-expand-lg navbar-light bg-light">
 				<div class="container-fluid">
@@ -148,11 +148,13 @@
 				<div class="form-floating mb-2">
 					<input type="text" class="form-control" id="email" placeholder="Email" name="email">
 					<label for="email">Email</label>
+					<em id="emailErrorMsg"></em>
 				</div>
 
 				<div class="form-floating mb-2">
 					<input type="text" class="form-control" id="username" placeholder="Username" name="username">
 					<label for="username">Username</label>
+					<em id="usernameErrorMsg"></em>
 				</div>
 
 				<div class="row mb-3">
@@ -211,27 +213,6 @@
 			};
 
 			$(document).ready(function() {
-				$.validator.defaults.onfocusout = function(element, event) {
-					if($(element).data("control") === "mycitycontrol")
-						return;
-
-					if(!this.checkable(element) && (element.name in this.submitted || !this.optional(element))) {
-						this.element(element);
-					}
-				}
-				
-				$.validator.defaults.onkeyup = function(element, event) {
-					if($(element).data("control") === "mycitycontrol")
-						return;
-
-					if(event.which === 9 && this.elementValue(element) === "")
-						return;
-
-					if(element.name in this.submitted || element === this.lastElement) {
-						this.element(element);
-					}
-				}
-
 				$.validator.addMethod('lettersOnly', function(value, element) {
 					return this.optional(element) || /^[A-Za-z áãâäàéêëèíîïìóõôöòúûüùçñ]+$/i.test(value);
 				}, 'Hanya boleh huruf dan spasi'); 
@@ -264,13 +245,21 @@
 						},
 						email: {
 							required: true,
-							emailEx: true
+							emailEx: true,
+							remote: {
+								url: 'email_check.php',
+								type: 'post'
+							}
 						},
 						username: {
 							required: true,
 							noSpaceSymbol: true,
 							minlength: 5,
-							maxlength: 36
+							maxlength: 36,
+							remote: {
+								url: 'username_check.php',
+								type: 'post'
+							}
 						},
 						password: {
 							required: true,
@@ -305,7 +294,7 @@
 					errorPlacement: function(error, element) {
 						error.addClass('invalid-feedback');
 
-						if(element.prop('type') === 'checkbox') {
+						if(element.prop('type') === 'radio') {
 							error.insertAfter(element.next('label'));
 						}
 						else {
